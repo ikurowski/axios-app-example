@@ -21,6 +21,11 @@ function App() {
     getMovies(setMovies);
   }
   function showAddMovieForm() {
+    if (postStatus.status === status.resolved) {
+      setPostStatus({
+        status: null,
+      });
+    }
     setAddMovieVisible(true);
   }
 
