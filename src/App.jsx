@@ -204,7 +204,7 @@ const Footer = styled.footer`
   grid-area: footer;
   padding: 0.25rem;
   & a {
-    color: #fff;
+    color: #ffffff40;
     text-decoration: none;
   }
 `;
