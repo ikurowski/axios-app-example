@@ -1,24 +1,64 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { getMovies, status } from './api';
+import { deleteMovie, postMovie, getMovies, status } from './api';
+import AddMovieForm from './form/AddMovieForm';
 
 function App() {
   const [movies, setMovies] = useState({
     status: null,
     data: [],
   });
+  const [deleteStatus, setDeleteStatus] = useState({
+    status: null,
+  });
+  const [addMovieVisible, setAddMovieVisible] = useState(true);
+  const [postStatus, setPostStatus] = useState({
+    status: null,
+  });
+
+  function fetchMovies() {
+    setAddMovieVisible(false);
+    getMovies(setMovies);
+  }
+  function showAddMovieForm() {
+    setAddMovieVisible(true);
+  }
+
+  function deleteMovieHandler(movieId) {
+    deleteMovie(movieId, setDeleteStatus);
+    if (deleteStatus.status === status.resolved) {
+      setMovies(prevMovies => ({
+        ...prevMovies,
+        data: prevMovies.data.filter(movie => movie.id !== movieId),
+      }));
+    }
+  }
+
+  function postMovieHandler(movie) {
+    postMovie(movie, setPostStatus);
+  }
+
+  const mappedMovies =
+    movies.data.length === 0 ? (
+      <H2>Sorry, no movies found :(</H2>
+    ) : (
+      movies.data.map(movie => (
+        <Element key={movie.id}>
+          <h2>{movie.title}</h2>
+          <p>{movie.openingText}</p>
+          <Delete type="button" onClick={() => deleteMovieHandler(movie.id)}>
+            X
+          </Delete>
+        </Element>
+      ))
+    );
 
   function renderContent() {
     switch (movies.status) {
       case status.pending:
         return <H2>Loading...</H2>;
       case status.resolved:
-        return movies.data.map(movie => (
-          <Element key={movie.id}>
-            <h2>{movie.title}</h2>
-            <p>{movie.openingCrawl}</p>
-          </Element>
-        ));
+        return mappedMovies;
       case status.rejected:
         return <H2>Sorry, I think resource API is dead : (</H2>;
       default:
@@ -29,14 +69,27 @@ function App() {
   return (
     <Container>
       <Header>
-        <h1>Star Wars Movies</h1>
+        <h1>Movies</h1>
       </Header>
+
       <ButtonContainer>
-        <button type="button" onClick={() => getMovies(setMovies)}>
+        <button type="button" onClick={fetchMovies}>
           Click to fetch movies
         </button>
+        <button type="button" onClick={showAddMovieForm}>
+          Click to add movie
+        </button>
       </ButtonContainer>
-      <ContentBox>{renderContent()}</ContentBox>
+      <ContentBox>
+        {addMovieVisible ? (
+          <AddMovieForm
+            postStatus={postStatus}
+            postMovieHandler={postMovieHandler}
+          />
+        ) : (
+          renderContent()
+        )}
+      </ContentBox>
       <Footer>
         <a href="https://github.com/ikurowski">ikurowski</a>
       </Footer>
@@ -82,8 +135,11 @@ const ButtonContainer = styled.div`
   ${flexCenter}
   background: #1f2128;
   grid-area: button;
+  gap: 2rem;
 
   & button {
+    flex: 1;
+    max-width: 250px;
     background-color: #54c471;
     border: none;
     color: #fff;
@@ -110,11 +166,13 @@ const ContentBox = styled.div`
   flex-direction: column;
   grid-area: content;
   background: #3a3a55;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-wrap: break-word;
 `;
 
 const Element = styled.div`
   display: flex;
+  position: relative;
   flex-direction: column;
   margin: 0 1.25rem;
 
@@ -151,4 +209,27 @@ const H2 = styled.h2`
   background: #3a3a55;
   height: 100%;
   font-size: 1.4rem;
+`;
+
+const Delete = styled.button`
+  position: absolute;
+  top: 5px;
+  right: 0;
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  border-radius: 50%;
+  background-color: transparent;
+  color: #ffffff73;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  transform: scale(1);
+  &:hover {
+    transform: scale(1.3);
+  }
+  &:active {
+    transform: scale(0.9);
+  }
 `;
