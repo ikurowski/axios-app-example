@@ -11,7 +11,7 @@ function App() {
   const [deleteStatus, setDeleteStatus] = useState({
     status: null,
   });
-  const [addMovieVisible, setAddMovieVisible] = useState(true);
+  const [addMovieVisible, setAddMovieVisible] = useState(false);
   const [postStatus, setPostStatus] = useState({
     status: null,
   });

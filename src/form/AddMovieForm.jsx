@@ -44,7 +44,7 @@ export default function AddMovieForm({ postStatus, postMovieHandler }) {
               Opening Text
               <textarea
                 minLength="20"
-                maxLength="500"
+                maxLength="1000"
                 required
                 rows="5"
                 id="opening-text"
