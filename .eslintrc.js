@@ -37,6 +37,6 @@ module.exports = {
     ],
     'react/jsx-one-expression-per-line': 'off',
     'no-unused-vars': 'warn',
-    'react/jsx-no-bind': 'warn',
+    'react/jsx-no-bind': 'off',
   },
 };
