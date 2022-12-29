@@ -12,12 +12,24 @@ export async function getMovies(setMovies) {
     data: [],
   });
   try {
-    const response = await axios.get('https://swapi.dev/api/films/');
-    const transformedData = response.data.results.map(movieData => ({
-      id: movieData.episode_id,
-      title: movieData.title,
-      openingCrawl: movieData.opening_crawl,
+    const response = await axios.get(
+      'https://axios-app-126c4-default-rtdb.europe-west1.firebasedatabase.app/movies.json',
+    );
+
+    if (!response.data) {
+      setMovies({
+        status: status.resolved,
+        data: [],
+      });
+      return;
+    }
+    const transformedData = Object.keys(response.data).map(movieId => ({
+      id: movieId,
+      title: response.data[movieId].title,
+      openingText: response.data[movieId].openingText,
+      releaseDate: response.data[movieId].releaseDate,
     }));
+
     setMovies({
       status: status.resolved,
       data: transformedData,
@@ -27,32 +39,36 @@ export async function getMovies(setMovies) {
       status: status.rejected,
       data: [],
     });
-    console.error(error);
   }
 }
 
-// check me
-export async function postMovies({ movie, setMovies }) {
-  setMovies({
-    status: status.pending,
-    data: [],
-  });
+export async function postMovie(movie, setPostStatus) {
   try {
-    const response = await axios.post('https://swapi.dev/api/films/', movie);
-    const transformedData = response.data.results.map(movieData => ({
-      id: movieData.episode_id,
-      title: movieData.title,
-      openingCrawl: movieData.opening_crawl,
-    }));
-    setMovies({
+    await axios.post(
+      'https://axios-app-126c4-default-rtdb.europe-west1.firebasedatabase.app/movies.json',
+      movie,
+    );
+    setPostStatus({
       status: status.resolved,
-      data: transformedData,
     });
   } catch (error) {
-    setMovies({
+    setPostStatus({
       status: status.rejected,
-      data: [],
     });
-    console.error(error);
+  }
+}
+
+export async function deleteMovie(movieId, setDeleteStatus) {
+  try {
+    await axios.delete(
+      `https://axios-app-126c4-default-rtdb.europe-west1.firebasedatabase.app/movies/${movieId}.json`,
+    );
+    setDeleteStatus({
+      status: status.resolved,
+    });
+  } catch (error) {
+    setDeleteStatus({
+      status: status.rejected,
+    });
   }
 }
