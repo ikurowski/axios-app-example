@@ -9,15 +9,14 @@ export default function AddMovieForm({ postStatus, postMovieHandler }) {
 
   function submitHandler(event) {
     event.preventDefault();
-
     const movie = {
       title: titleRef.current.value,
       openingText: openingTextRef.current.value,
       releaseDate: releaseDateRef.current.value,
     };
-
     postMovieHandler(movie);
   }
+
   function renderContent() {
     switch (postStatus.status) {
       case status.pending:
@@ -51,12 +50,10 @@ export default function AddMovieForm({ postStatus, postMovieHandler }) {
                 ref={openingTextRef}
               />
             </label>
-
             <label htmlFor="date">
               Release Date
               <input required type="date" id="date" ref={releaseDateRef} />
             </label>
-
             <Button type="submit">Add Movie</Button>
           </Form>
         );

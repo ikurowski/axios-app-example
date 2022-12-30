@@ -20,6 +20,7 @@ function App() {
     setAddMovieVisible(false);
     getMovies(setMovies);
   }
+
   function showAddMovieForm() {
     if (postStatus.status === status.resolved) {
       setPostStatus({
@@ -43,7 +44,7 @@ function App() {
     postMovie(movie, setPostStatus);
   }
 
-  const mappedMovies =
+  const resolvedContent =
     movies.data.length === 0 ? (
       <H2>Sorry, no movies found :(</H2>
     ) : (
@@ -63,7 +64,7 @@ function App() {
       case status.pending:
         return <H2>Loading...</H2>;
       case status.resolved:
-        return mappedMovies;
+        return resolvedContent;
       case status.rejected:
         return <H2>Sorry, I think resource API is dead : (</H2>;
       default:
@@ -76,7 +77,6 @@ function App() {
       <Header>
         <h1>Movies</h1>
       </Header>
-
       <ButtonContainer>
         <button type="button" onClick={fetchMovies}>
           Click to fetch movies
@@ -115,7 +115,6 @@ const Container = styled.div`
   height: 100vh;
   background-color: #041000;
   color: white;
-
   grid-template-rows: 0.2fr 0.4fr 1fr 0.03fr;
   grid-template-areas:
     'nav nav nav'
@@ -180,7 +179,6 @@ const Element = styled.div`
   position: relative;
   flex-direction: column;
   margin: 0 1.25rem;
-
   &:not(:last-child) {
     border-bottom: 1px solid #ffffff98;
   }
@@ -191,6 +189,7 @@ const Element = styled.div`
     font-weight: 400;
     text-align: left;
   }
+
   h2 {
     padding: 1rem 0;
     font-size: 1.5rem;
@@ -203,6 +202,7 @@ const Footer = styled.footer`
   background: #101010;
   grid-area: footer;
   padding: 0.25rem;
+
   & a {
     color: #ffffff40;
     text-decoration: none;
