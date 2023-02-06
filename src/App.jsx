@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+/* eslint-disable no-alert */
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { deleteMovie, postMovie, getMovies, status } from './api';
 import AddMovieForm from './form/AddMovieForm';
@@ -16,6 +17,10 @@ function App() {
     status: null,
   });
 
+  useEffect(() => {
+    if (deleteStatus.status === status.rejected) alert('something went wrong');
+  }, [deleteStatus]);
+
   function fetchMovies() {
     setAddMovieVisible(false);
     getMovies(setMovies);
@@ -30,14 +35,9 @@ function App() {
     setAddMovieVisible(true);
   }
 
-  function deleteMovieHandler(movieId) {
-    deleteMovie(movieId, setDeleteStatus);
-    if (deleteStatus.status === status.resolved) {
-      setMovies(prevMovies => ({
-        ...prevMovies,
-        data: prevMovies.data.filter(movie => movie.id !== movieId),
-      }));
-    }
+  async function deleteMovieHandler(movieId) {
+    await deleteMovie(movieId, setDeleteStatus);
+    getMovies(setMovies);
   }
 
   function postMovieHandler(movie) {
